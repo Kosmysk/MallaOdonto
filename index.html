@@ -2,16 +2,569 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Odonto UNAB 🦷🤍</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Odonto UNAB 🦷💜</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #2d3748;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInDown 0.6s ease;
+    }
+
+    h1 {
+      color: #ffffff;
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .subtitle {
+      color: #e2e8f0;
+      font-size: 1.1rem;
+      font-weight: 400;
+    }
+
+    .stats {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin: 30px 0;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 20px 35px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #667eea;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #718096;
+      margin-top: 5px;
+    }
+
+    .controls {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.95);
+      color: #667eea;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      background: #ffffff;
+    }
+
+    #malla {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      animation: fadeIn 0.8s ease;
+    }
+
+    .semestre {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 25px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .semestre:hover {
+      transform: translateY(-5px);
+    }
+
+    .semestre h2 {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: #667eea;
+      font-weight: 700;
+      padding-bottom: 15px;
+      border-bottom: 3px solid #e2e8f0;
+    }
+
+    .ramo {
+      background: #f7fafc;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+      cursor: not-allowed;
+      transition: all 0.3s ease;
+      border-left: 5px solid #cbd5e0;
+      position: relative;
+      overflow: hidden;
+      line-height: 1.4;
+    }
+
+    .ramo::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      transition: width 0.3s ease;
+    }
+
+    .ramo.bloqueado {
+      opacity: 0.6;
+    }
+
+    .ramo.activo {
+      background: linear-gradient(135deg, #f6f8ff 0%, #eef2ff 100%);
+      border-left-color: #667eea;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+    }
+
+    .ramo.activo::before {
+      background: #667eea;
+    }
+
+    .ramo.activo:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .ramo.aprobado {
+      background: linear-gradient(135deg, #d4f4dd 0%, #b9f3c8 100%);
+      border-left-color: #48bb78;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(72, 187, 120, 0.2);
+    }
+
+    .ramo.aprobado::before {
+      background: #48bb78;
+    }
+
+    .ramo.aprobado:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 15px rgba(72, 187, 120, 0.35);
+    }
+
+    .icon {
+      display: inline-block;
+      margin-right: 8px;
+      font-size: 1.1rem;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .subtitle {
+        font-size: 0.95rem;
+      }
+
+      #malla {
+        grid-template-columns: 1fr;
+      }
+
+      .stat-card {
+        padding: 15px 25px;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+      }
+    }
+
+    .progress-bar-container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 25px;
+      margin: 20px auto;
+      max-width: 600px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 30px;
+      background: #e2e8f0;
+      border-radius: 15px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      transition: width 0.5s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+  </style>
 </head>
 <body>
 
-<h1>Odonto UNAB 🦷🤍</h1>
-<p class="sub">Marca tus ramos aprobados para desbloquear los siguientes</p>
+<div class="container">
+  <header>
+    <h1>🦷 Odonto UNAB 💜</h1>
+    <p class="subtitle">Haz clic en las asignaturas disponibles para marcarlas como aprobadas</p>
+    <p class="subtitle" style="font-size: 0.9rem; margin-top: 5px;">Haz clic nuevamente en una asignatura aprobada para desmarcarla</p>
+  </header>
 
-<div id="malla"></div>
+  <div class="progress-bar-container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressBar">0%</div>
+    </div>
+  </div>
 
-<script src="script.js"></script>
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-number" id="aprobadas">0</div>
+      <div class="stat-label">Aprobadas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="disponibles">0</div>
+      <div class="stat-label">Disponibles</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="bloqueadas">0</div>
+      <div class="stat-label">Bloqueadas</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn" onclick="resetearTodo()">🔄 Reiniciar Todo</button>
+  </div>
+
+  <div id="malla"></div>
+</div>
+
+<script>
+const ramos = [
+  // SEMESTRE 1
+  { nombre: "Bases morfológicas y estructurales I", semestre: "Semestre 1", prereq: [] },
+  { nombre: "Biología Celular", semestre: "Semestre 1", prereq: [] },
+  { nombre: "Física aplicada a la Odontología", semestre: "Semestre 1", prereq: [] },
+  { nombre: "Introducción a la Odontología I", semestre: "Semestre 1", prereq: [] },
+  { nombre: "Habilidades Comunicativas", semestre: "Semestre 1", prereq: [] },
+  { nombre: "Inglés I", semestre: "Semestre 1", prereq: [] },
+
+  // SEMESTRE 2
+  { nombre: "Bases morfológicas y estructurales II", semestre: "Semestre 2", prereq: ["Bases morfológicas y estructurales I"] },
+  { nombre: "Genética Molecular Humana", semestre: "Semestre 2", prereq: ["Biología Celular"] },
+  { nombre: "Química General e Inorgánica", semestre: "Semestre 2", prereq: ["Física aplicada a la Odontología"] },
+  { nombre: "Introducción a la Odontología II", semestre: "Semestre 2", prereq: ["Introducción a la Odontología I"] },
+  { nombre: "Inglés II", semestre: "Semestre 2", prereq: ["Inglés I"] },
+
+  // ANUAL SEGUNDO AÑO
+  { nombre: "Biomateriales Dentales", semestre: "Anual Segundo Año", prereq: [
+    "Bases morfológicas y estructurales II",
+    "Química General e Inorgánica",
+    "Introducción a la Odontología II"
+  ]},
+
+  // SEMESTRE 3
+  { nombre: "Fisiología", semestre: "Semestre 3", prereq: ["Bases morfológicas y estructurales II"] },
+  { nombre: "Bioquímica General", semestre: "Semestre 3", prereq: ["Biología Celular", "Química General e Inorgánica"] },
+  { nombre: "Microbiología Oral", semestre: "Semestre 3", prereq: ["Genética Molecular Humana"] },
+  { nombre: "Patología General I", semestre: "Semestre 3", prereq: [
+    "Bases morfológicas y estructurales II",
+    "Genética Molecular Humana"
+  ]},
+  { nombre: "Inglés III", semestre: "Semestre 3", prereq: ["Inglés II"] },
+
+  // SEMESTRE 4
+  { nombre: "Bioquímica Oral", semestre: "Semestre 4", prereq: ["Bioquímica General"] },
+  { nombre: "Patología General II", semestre: "Semestre 4", prereq: ["Fisiología", "Patología General I"] },
+  { nombre: "Promoción y Educación en Salud", semestre: "Semestre 4", prereq: ["Introducción a la Odontología II"] },
+  { nombre: "Farmacología", semestre: "Semestre 4", prereq: ["Fisiología", "Microbiología Oral"] },
+  { nombre: "Inglés IV", semestre: "Semestre 4", prereq: ["Inglés III"] },
+
+  // ANUAL TERCER AÑO
+  { nombre: "Patología Dentomaxilofacial", semestre: "Anual Tercer Año", prereq: ["Patología General II", "Farmacología"] },
+  { nombre: "Imagenología Dentomaxilar", semestre: "Anual Tercer Año", prereq: ["Patología General II"] },
+  { nombre: "Cirugía Bucal Básica", semestre: "Anual Tercer Año", prereq: ["Patología General II", "Farmacología"] },
+  { nombre: "Fisiología Oral y Oclusión", semestre: "Anual Tercer Año", prereq: ["Biomateriales Dentales"] },
+  { nombre: "Integrador I: Preclínico Integrado", semestre: "Anual Tercer Año", prereq: [
+    "Biomateriales Dentales",
+    "Promoción y Educación en Salud"
+  ]},
+
+  // SEMESTRE 6
+  { nombre: "Cariología Clínica", semestre: "Semestre 6", prereq: [
+    "Bioquímica Oral",
+    "Patología General II",
+    "Promoción y Educación en Salud"
+  ]},
+
+  // ANUAL CUARTO AÑO
+  { nombre: "Rehabilitación Oral", semestre: "Anual Cuarto Año", prereq: [
+    "Fisiología Oral y Oclusión",
+    "Cariología Clínica",
+    "Integrador I: Preclínico Integrado"
+  ]},
+  { nombre: "Cirugía Dentomaxilar", semestre: "Anual Cuarto Año", prereq: [
+    "Patología Dentomaxilofacial",
+    "Imagenología Dentomaxilar",
+    "Cirugía Bucal Básica"
+  ]},
+  { nombre: "Endodoncia", semestre: "Anual Cuarto Año", prereq: [
+    "Imagenología Dentomaxilar",
+    "Cirugía Bucal Básica"
+  ]},
+  { nombre: "Periodoncia", semestre: "Anual Cuarto Año", prereq: [
+    "Imagenología Dentomaxilar",
+    "Cirugía Bucal Básica",
+    "Integrador I: Preclínico Integrado"
+  ]},
+
+  // SEMESTRE 7
+  { nombre: "Ética y Psicología orientada a la Práctica Clínica", semestre: "Semestre 7", prereq: ["Promoción y Educación en Salud"] },
+
+  // SEMESTRE 8
+  { nombre: "Salud Pública Odontológica", semestre: "Semestre 8", prereq: ["Cariología Clínica"] },
+  { nombre: "Medicina Oral", semestre: "Semestre 8", prereq: ["Patología Dentomaxilofacial"] },
+
+  // ANUAL QUINTO AÑO
+  { nombre: "Cirugía y Traumatología Maxilofacial", semestre: "Anual Quinto Año", prereq: [
+    "Cirugía Dentomaxilar",
+    "Medicina Oral"
+  ]},
+  { nombre: "Ortodoncia y Ortopedia Dentomaxilar", semestre: "Anual Quinto Año", prereq: [
+    "Periodoncia",
+    "Ética y Psicología orientada a la Práctica Clínica"
+  ]},
+  { nombre: "Odontopediatría", semestre: "Anual Quinto Año", prereq: [
+    "Rehabilitación Oral",
+    "Cirugía Dentomaxilar",
+    "Endodoncia",
+    "Periodoncia"
+  ]},
+  { nombre: "INTEGRADOR II: Clínica Integral del Adulto y Odontogeriatría", semestre: "Anual Quinto Año", prereq: [
+    "Ética y Psicología orientada a la Práctica Clínica",
+    "Rehabilitación Oral",
+    "Endodoncia",
+    "Periodoncia"
+  ]},
+
+  // SEMESTRE 9
+  { nombre: "Pensamiento Crítico", semestre: "Semestre 9", prereq: ["Habilidades Comunicativas"] },
+
+  // SEMESTRE 10
+  { nombre: "Odontología basada en la evidencia", semestre: "Semestre 10", prereq: ["Salud Pública Odontológica"] },
+  { nombre: "Administración y gestión en Odontología", semestre: "Semestre 10", prereq: ["Salud Pública Odontológica"] },
+
+  // ANUAL SEXTO AÑO
+  { nombre: "Proyecto de Investigación", semestre: "Anual Sexto Año", prereq: [
+    "Pensamiento Crítico",
+    "Cirugía y Traumatología Maxilofacial",
+    "Ortodoncia y Ortopedia Dentomaxilar",
+    "Odontopediatría",
+    "Odontología basada en la evidencia",
+    "Administración y gestión en Odontología",
+    "INTEGRADOR II: Clínica Integral del Adulto y Odontogeriatría"
+  ]},
+  { nombre: "INTEGRADOR III: Internado Clínico", semestre: "Anual Sexto Año", prereq: [
+    "Pensamiento Crítico",
+    "Cirugía y Traumatología Maxilofacial",
+    "Ortodoncia y Ortopedia Dentomaxilar",
+    "Odontopediatría",
+    "Odontología basada en la evidencia",
+    "Administración y gestión en Odontología",
+    "INTEGRADOR II: Clínica Integral del Adulto y Odontogeriatría"
+  ]}
+];
+
+const contenedor = document.getElementById("malla");
+let aprobados = [];
+
+// Intentar cargar desde localStorage, pero manejar errores
+try {
+  const stored = localStorage.getItem("aprobados");
+  if (stored) {
+    aprobados = JSON.parse(stored);
+  }
+} catch (e) {
+  console.error("Error al cargar datos:", e);
+  aprobados = [];
+}
+
+function puedeActivarse(ramo) {
+  return ramo.prereq.every(r => aprobados.includes(r));
+}
+
+function actualizarEstadisticas() {
+  const aprobadas = aprobados.length;
+  const disponibles = ramos.filter(r => !aprobados.includes(r.nombre) && puedeActivarse(r)).length;
+  const bloqueadas = ramos.filter(r => !aprobados.includes(r.nombre) && !puedeActivarse(r)).length;
+  const porcentaje = Math.round((aprobadas / ramos.length) * 100);
+
+  document.getElementById("aprobadas").textContent = aprobadas;
+  document.getElementById("disponibles").textContent = disponibles;
+  document.getElementById("bloqueadas").textContent = bloqueadas;
+  document.getElementById("progressBar").style.width = porcentaje + "%";
+  document.getElementById("progressBar").textContent = porcentaje + "%";
+}
+
+function toggleRamo(ramo) {
+  const index = aprobados.indexOf(ramo.nombre);
+  
+  if (index > -1) {
+    // Desmarcar: verificar si otros ramos dependen de este
+    const dependientes = ramos.filter(r => 
+      r.prereq.includes(ramo.nombre) && aprobados.includes(r.nombre)
+    );
+    
+    if (dependientes.length > 0) {
+      const confirmacion = confirm(
+        `⚠️ Al desmarcar "${ramo.nombre}", también se desmarcarán las siguientes asignaturas que dependen de ella:\n\n` +
+        dependientes.map(r => `• ${r.nombre}`).join('\n') +
+        `\n\n¿Deseas continuar?`
+      );
+      
+      if (!confirmacion) return;
+      
+      // Desmarcar esta y todas las dependientes
+      aprobados.splice(index, 1);
+      dependientes.forEach(dep => {
+        const depIndex = aprobados.indexOf(dep.nombre);
+        if (depIndex > -1) {
+          aprobados.splice(depIndex, 1);
+        }
+      });
+    } else {
+      // No hay dependientes, desmarcar directamente
+      aprobados.splice(index, 1);
+    }
+  } else if (puedeActivarse(ramo)) {
+    // Marcar como aprobado
+    aprobados.push(ramo.nombre);
+  }
+  
+  localStorage.setItem("aprobados", JSON.stringify(aprobados));
+  render();
+}
+
+function resetearTodo() {
+  if (confirm("¿Estás seguro de que quieres reiniciar todo el progreso?")) {
+    aprobados = [];
+    localStorage.setItem("aprobados", JSON.stringify(aprobados));
+    render();
+  }
+}
+
+function render() {
+  contenedor.innerHTML = "";
+  const semestres = [...new Set(ramos.map(r => r.semestre))];
+
+  semestres.forEach(sem => {
+    const div = document.createElement("div");
+    div.className = "semestre";
+    div.innerHTML = `<h2>${sem}</h2>`;
+
+    ramos.filter(r => r.semestre === sem).forEach(ramo => {
+      const r = document.createElement("div");
+      r.className = "ramo";
+
+      let icon = "🔒";
+      if (aprobados.includes(ramo.nombre)) {
+        r.classList.add("aprobado");
+        icon = "✅";
+      } else if (puedeActivarse(ramo)) {
+        r.classList.add("activo");
+        icon = "🦷";
+      } else {
+        r.classList.add("bloqueado");
+      }
+
+      r.innerHTML = `<span class="icon">${icon}</span>${ramo.nombre}`;
+
+      r.onclick = () => toggleRamo(ramo);
+
+      div.appendChild(r);
+    });
+
+    contenedor.appendChild(div);
+  });
+
+  actualizarEstadisticas();
+}
+
+render();
+</script>
+
 </body>
 </html>
