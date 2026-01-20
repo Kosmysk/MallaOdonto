@@ -134,10 +134,81 @@ const ramos = [
 ];
 
 const contenedor = document.getElementById("malla");
-let aprobados = JSON.parse(localStorage.getItem("aprobados")) || [];
+let aprobados = [];
+
+// Intentar cargar desde localStorage, pero manejar errores
+try {
+  const stored = localStorage.getItem("aprobados");
+  if (stored) {
+    aprobados = JSON.parse(stored);
+  }
+} catch (e) {
+  console.error("Error al cargar datos:", e);
+  aprobados = [];
+}
 
 function puedeActivarse(ramo) {
   return ramo.prereq.every(r => aprobados.includes(r));
+}
+
+function actualizarEstadisticas() {
+  const aprobadas = aprobados.length;
+  const disponibles = ramos.filter(r => !aprobados.includes(r.nombre) && puedeActivarse(r)).length;
+  const bloqueadas = ramos.filter(r => !aprobados.includes(r.nombre) && !puedeActivarse(r)).length;
+  const porcentaje = Math.round((aprobadas / ramos.length) * 100);
+
+  document.getElementById("aprobadas").textContent = aprobadas;
+  document.getElementById("disponibles").textContent = disponibles;
+  document.getElementById("bloqueadas").textContent = bloqueadas;
+  document.getElementById("progressBar").style.width = porcentaje + "%";
+  document.getElementById("progressBar").textContent = porcentaje + "%";
+}
+
+function toggleRamo(ramo) {
+  const index = aprobados.indexOf(ramo.nombre);
+  
+  if (index > -1) {
+    // Desmarcar: verificar si otros ramos dependen de este
+    const dependientes = ramos.filter(r => 
+      r.prereq.includes(ramo.nombre) && aprobados.includes(r.nombre)
+    );
+    
+    if (dependientes.length > 0) {
+      const confirmacion = confirm(
+        `⚠️ Al desmarcar "${ramo.nombre}", también se desmarcarán las siguientes asignaturas que dependen de ella:\n\n` +
+        dependientes.map(r => `• ${r.nombre}`).join('\n') +
+        `\n\n¿Deseas continuar?`
+      );
+      
+      if (!confirmacion) return;
+      
+      // Desmarcar esta y todas las dependientes
+      aprobados.splice(index, 1);
+      dependientes.forEach(dep => {
+        const depIndex = aprobados.indexOf(dep.nombre);
+        if (depIndex > -1) {
+          aprobados.splice(depIndex, 1);
+        }
+      });
+    } else {
+      // No hay dependientes, desmarcar directamente
+      aprobados.splice(index, 1);
+    }
+  } else if (puedeActivarse(ramo)) {
+    // Marcar como aprobado
+    aprobados.push(ramo.nombre);
+  }
+  
+  localStorage.setItem("aprobados", JSON.stringify(aprobados));
+  render();
+}
+
+function resetearTodo() {
+  if (confirm("¿Estás seguro de que quieres reiniciar todo el progreso?")) {
+    aprobados = [];
+    localStorage.setItem("aprobados", JSON.stringify(aprobados));
+    render();
+  }
 }
 
 function render() {
@@ -153,27 +224,28 @@ function render() {
       const r = document.createElement("div");
       r.className = "ramo";
 
+      let icon = "🔒";
       if (aprobados.includes(ramo.nombre)) {
         r.classList.add("aprobado");
+        icon = "✅";
       } else if (puedeActivarse(ramo)) {
         r.classList.add("activo");
+        icon = "🦷";
+      } else {
+        r.classList.add("bloqueado");
       }
 
-      r.textContent = ramo.nombre;
+      r.innerHTML = `<span class="icon">${icon}</span>${ramo.nombre}`;
 
-      r.onclick = () => {
-        if (r.classList.contains("activo")) {
-          aprobados.push(ramo.nombre);
-          localStorage.setItem("aprobados", JSON.stringify(aprobados));
-          render();
-        }
-      };
+      r.onclick = () => toggleRamo(ramo);
 
       div.appendChild(r);
     });
 
     contenedor.appendChild(div);
   });
+
+  actualizarEstadisticas();
 }
 
 render();
